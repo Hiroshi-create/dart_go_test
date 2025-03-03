@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package file;
+
+option go_package = "./pb";
+
+message ListFilesRequest {};
+message ListFilesResponse {
+    repeated string fileNames = 1;
+};
+
+message DownloadRequest {
+    string fileName = 1;
+};
+message DownloadResponse {
+    bytes data = 1;
+};
+
+message UploadRequest {
+    bytes data = 1;
+};
+message UploadResponse {  //受け取ったファイルのサイズを返す
+    int32 size = 1;
+};
+
+message UploadAndNotifyProgressRequest {
+    bytes data = 1;
+}
+message UploadAndNotifyProgressResponse {
+    string msg = 1;
+}
+
+service FileService {
+    rpc ListFiles (ListFilesRequest) returns (ListFilesResponse);
+    rpc Download (DownloadRequest) returns (stream DownloadResponse);
+    rpc Upload (stream UploadRequest) returns (UploadResponse);
+    rpc UploadAndNotifyProgress (stream UploadAndNotifyProgressRequest) returns (stream UploadAndNotifyProgressResponse);
+}
